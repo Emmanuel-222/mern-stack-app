@@ -40,3 +40,18 @@ export const removeProduct = async (req, res) => {
         return res.status(500).json({success: false, message: "We have an issue with our server!"})
     }
 }
+
+export const updateProduct = async (req, res) => {
+    const { id } = req.params;
+    const product = req.body
+    if(!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ success: false, message: "Invalid Id. Please put in a valid Id."})
+    }
+    try {
+        const updatedProduct = await Products.findByIdAndUpdate(id, product, { new: true, })
+        return res.status(200).json({ success: true, data: updatedProduct, message: "Product has been updated successfully"})
+    } catch (error) {
+        console.log(`ERROR: ${error}`);
+        return res.status(500).json({ success: false, message: "There is an internal server issue."})
+    }
+}
